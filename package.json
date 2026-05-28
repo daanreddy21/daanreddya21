@@ -1,0 +1,17 @@
+{
+  "name": "daan-reddy-portfolio",
+  "version": "1.0.0",
+  "description": "Personal portfolio for Daan Reddy A, AI-integrated backend and full stack developer.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "portfolio",
+    "backend",
+    "full-stack",
+    "ai"
+  ],
+  "author": "Daan Reddy A",
+  "license": "MIT"
+}
