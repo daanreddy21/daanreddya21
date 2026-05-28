@@ -1,9 +1,10 @@
+
 const fs = require("fs");
 const http = require("http");
 const path = require("path");
 
 const PORT = process.env.PORT || 3000;
-const PUBLIC_DIR = path.join(__dirname);
+const PUBLIC_DIR = __dirname;
 
 const mimeTypes = {
   ".html": "text/html; charset=utf-8",
@@ -16,17 +17,24 @@ const mimeTypes = {
 };
 
 const serveStatic = (request, response) => {
-  const { pathname } = new URL(request.url, `http://${request.headers.host}`);
-  const requestPath = pathname === "/" ? "/index.html" : pathname;
-  const decodedPath = decodeURIComponent(requestPath);
-  const safePath = path.normalize(decodedPath).replace(/^(\.\.[/\\])+/, "");
-const filePath = path.join(PUBLIC_DIR, safePath === "/" ? "index.html" : safePath);
+  const { pathname } = new URL(
+    request.url,
+    `http://${request.headers.host}`
+  );
 
-  if (!filePath.startsWith(PUBLIC_DIR)) {
-    response.writeHead(403);
-    response.end("Forbidden");
-    return;
+  let requestPath = pathname;
+
+  if (requestPath === "/") {
+    requestPath = "/index.html";
   }
+
+  const decodedPath = decodeURIComponent(requestPath);
+
+  const safePath = path
+    .normalize(decodedPath)
+    .replace(/^(\.\.[/\\])+/, "");
+
+  const filePath = path.join(PUBLIC_DIR, safePath);
 
   fs.readFile(filePath, (error, content) => {
     if (error) {
@@ -35,12 +43,18 @@ const filePath = path.join(PUBLIC_DIR, safePath === "/" ? "index.html" : safePat
       return;
     }
 
-    const type = mimeTypes[path.extname(filePath)] || "application/octet-stream";
-    response.writeHead(200, { "Content-Type": type });
+    const type =
+      mimeTypes[path.extname(filePath)] ||
+      "application/octet-stream";
+
+    response.writeHead(200, {
+      "Content-Type": type,
+    });
+
     response.end(content);
   });
 };
 
 http.createServer(serveStatic).listen(PORT, () => {
-  console.log(`Daan Reddy A portfolio running at http://localhost:${PORT}`);
+  console.log(`Portfolio running on port ${PORT}`);
 });
